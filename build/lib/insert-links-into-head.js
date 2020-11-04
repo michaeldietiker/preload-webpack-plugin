@@ -34,7 +34,7 @@ function insertLinksIntoHead({
     return html.replace('<body>', `<head>${links.join('')}\n</head><body>`);
   }
 
-  throw new Error(`The HTML provided did not contain a </head> or a <body>:\n\n${html}`);
+  return links.join('') + html;
 }
 
 module.exports = insertLinksIntoHead;
