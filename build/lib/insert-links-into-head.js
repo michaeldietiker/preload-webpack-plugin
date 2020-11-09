@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * @license
  * Copyright 2018 Google Inc.
@@ -14,11 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+function insertLinksIntoHead({
+  html,
+  links = []
+}) {
+  if (links.length === 0) {
+    return html;
+  }
 
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+  if (html.includes('</head>')) {
+    // If a valid closing </head> is found, insert the new <link>s right before it.
+    return html.replace('</head>', links.join('') + '</head>');
+  }
 
-const testSpec = require('../spec');
+  if (html.includes('<body>')) {
+    // If there's a <body> but no <head>, create a <head> containing the <head>.
+    return html.replace('<body>', `<head>${links.join('')}\n</head><body>`);
+  }
 
-const descriptionPrefix = '[webpack 4 / html-webpack-plugin 3]';
-testSpec({webpack, HtmlWebpackPlugin, descriptionPrefix});
+  return links.join('') + html;
+}
+
+module.exports = insertLinksIntoHead;
